@@ -6,11 +6,11 @@ TX="02000000000104b5f641e80e9065f09b12f3e373072518885d1bd1ddd9298e5b9840de515eda
 # Decode transaction and extract public keys
 DECODED=$(bitcoin-cli -regtest decoderawtransaction $TX true)
 
-# Extract public keys from witness data
-PUBKEY1=$(echo $DECODED | jq -r '.vin[0].txinwitness[-1]' | cut -c 3-)
-PUBKEY2=$(echo $DECODED | jq -r '.vin[1].txinwitness[-1]' | cut -c 3-)
-PUBKEY3=$(echo $DECODED | jq -r '.vin[2].txinwitness[-1]' | cut -c 3-)
-PUBKEY4=$(echo $DECODED | jq -r '.vin[3].txinwitness[-1]' | cut -c 3-)
+# Extract public keys from witness data (keeping the 02/03 prefix)
+PUBKEY1=$(echo $DECODED | jq -r '.vin[0].txinwitness[-1]' | cut -c 3-68)
+PUBKEY2=$(echo $DECODED | jq -r '.vin[1].txinwitness[-1]' | cut -c 3-68)
+PUBKEY3=$(echo $DECODED | jq -r '.vin[2].txinwitness[-1]' | cut -c 3-68)
+PUBKEY4=$(echo $DECODED | jq -r '.vin[3].txinwitness[-1]' | cut -c 3-68)
 
 # Create 1-of-4 multisig address and extract just the address
 MULTISIG_INFO=$(bitcoin-cli -regtest createmultisig 1 "[\"$PUBKEY1\",\"$PUBKEY2\",\"$PUBKEY3\",\"$PUBKEY4\"]")
