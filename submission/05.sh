@@ -10,6 +10,9 @@ vout=37
 
 rawtx=$(bitcoin-cli -regtest createrawtransaction "[{\"txid\": \"$txid\", \"vout\": $vout}]" "[{\"2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP\": 0.20}]")
 
-psbt=$(bitcoin-cli -regtest walletcreatefundedpsbt '[]' "[{\"2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP\": 0.20}]")
-
+psbt=$(bitcoin-cli -regtest walletcreatefundedpsbt \
+  "[{\"txid\":\"$txid\",\"vout\":$vout}]" \
+  "[{\"2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP\":0.20}]" \
+  0 \
+  "{\"fee_rate\":10}" | jq -r '.psbt')
 echo $psbt
