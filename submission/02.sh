@@ -4,7 +4,8 @@
 # Create a SegWit address
 SEGWIT_ADDRESS=$(bitcoin-cli -regtest getnewaddress "segwit_address" "bech32")
 
-# Get the public key from the address using getaddressinfo
+# Get only the public key from the address using getaddressinfo
+# Using grep and cut to extract just the pubkey value
 PUBKEY=$(bitcoin-cli -regtest getaddressinfo "$SEGWIT_ADDRESS" | grep -o '"pubkey": "[^"]*' | cut -d'"' -f4)
 
 # First generate some blocks to get coins
@@ -14,6 +15,5 @@ bitcoin-cli -regtest generatetoaddress 101 "$FUNDING_ADDRESS" >/dev/null 2>&1
 # Now send with explicit fee rate to avoid fee estimation
 bitcoin-cli -regtest -named sendtoaddress address="$SEGWIT_ADDRESS" amount=1.0 fee_rate=10 >/dev/null 2>&1
 
-# Print both the address and public key
-echo "SegWit Address: $SEGWIT_ADDRESS"
-echo "Public Key: $PUBKEY"
+# Return only the public key (should be in format: 02/03 + 64 hex characters)
+echo "$PUBKEY"
