@@ -7,15 +7,14 @@
 
 # Exact values from the test
 TXID="77ef3d5b5f00d1d92c77e3e4b2a5f6d9954547d0865f8d695eecbbde8e92b0c8"
+VOUT=0
 RECIPIENT="2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP"
+AMOUNT=0.20000000
 
-# From section 7.1, using exact command format shown:
-psbt=$(bitcoin-cli -named createrawtransaction \
-  inputs='''[ { "txid": "'$TXID'", "vout": 0, "sequence": 4294967293 } ]''' \
-  outputs='''{ "'$RECIPIENT'": 0.20000000 }''')
-
-# Convert raw transaction to PSBT as shown in docs
-psbt=$(bitcoin-cli -named converttopsbt hexstring=$psbt)
+# Create PSBT directly instead of creating raw transaction first
+psbt=$(bitcoin-cli -named createpsbt \
+  inputs='''[ { "txid": "'$TXID'", "vout": '$VOUT' } ]''' \
+  outputs='''{ "'$RECIPIENT'": '$AMOUNT' }''')
 
 # Output PSBT
 echo $psbt
