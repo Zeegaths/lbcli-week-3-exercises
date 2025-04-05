@@ -10,7 +10,7 @@ txid="c8b0928edebbec5e698d5f86d0474595d9f6a5b2e4e3772cd9d1005f23bdef77"
 vout=25  # This appears to be the vout from the transaction input
 
 # Create a PSBT
-psbt=$(bitcoin-cli -named createpsbt \
+psbt=$(bitcoin-cli -regtest -named createpsbt \
   inputs='''[{"txid":"'$txid'", "vout":'$vout'}]''' \
   outputs='''[{"2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP": 0.2}]''')
 
