@@ -2,21 +2,15 @@
 # transaction=cHNidP8BAHsCAAAAAhuVpgVRdOxkuC7wW2rvw4800OVxl+QCgezYKHtCYN7GAQAAAAD/////HPTH9wFgyf4iQ2xw4DIDP8t9IjCePWDjhqgs8fXvSIcAAAAAAP////8BigIAAAAAAAAWABTHctb5VULhHvEejvx8emmDCtOKBQAAAAAAAAAA
 #!/bin/bash
 
-# Transaction details from the expected output
-TXID="23c19f37d4e92e9a115aab86e4edc1b92a51add4e0ed0034bb166314dde50e16"
-RECIPIENT="2MvLcssW49n9atmksjwg2ZCMsEMsoj3pzUP"
-AMOUNT=0.19010000  # 0x011C2D00 in satoshis from the expected output
+#!/bin/bash
 
-# Create raw transaction
-rawtx=$(bitcoin-cli -regtest -named createrawtransaction \
-  inputs='''[ 
-    { "txid": "'$TXID'", "vout": 0, "sequence": 4294967293 },
-    { "txid": "'$TXID'", "vout": 1, "sequence": 4294967293 }
-  ]''' \
-  outputs='''{ "'$RECIPIENT'": '$AMOUNT' }''')
+# The PSBT to analyze
+psbt="cHNidP8BAHsCAAAAAhuVpgVRdOxkuC7wW2rvw4800OVxl+QCgezYKHtCYN7GAQAAAAD/////HPTH9wFgyf4iQ2xw4DIDP8t9IjCePWDjhqgs8fXvSIcAAAAAAP////8BigIAAAAAAAAWABTHctb5VULhHvEejvx8emmDCtOKBQAAAAAAAAAA"
 
-# Convert to PSBT
-psbt=$(bitcoin-cli -regtest -named converttopsbt hexstring=$rawtx)
+# Decode the PSBT using bitcoin-cli and extract the recipient address with jq
+recipient=$(bitcoin-cli -regtest decodepsbt "$psbt" | jq -r '.tx.vout[0].scriptPubKey.addresses[0]')
 
-# Output the exact PSBT
-echo "$psbt"
+# For regtest network, change the prefix from tb1q to bcrt1q
+bcrt_address=${recipient/tb1q/bcrt1q}
+
+echo "$bcrt_address"
