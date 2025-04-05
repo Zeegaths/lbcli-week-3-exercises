@@ -16,7 +16,7 @@ rawtx=$(bitcoin-cli -regtest -named createrawtransaction \
   outputs='''{ "'$RECIPIENT'": '$AMOUNT' }''')
 
 # Convert to PSBT
-psbt=$(bitcoin-cli -named converttopsbt hexstring=$rawtx)
+psbt=$(bitcoin-cli -regtest -named converttopsbt hexstring=$rawtx)
 
 # Output the exact PSBT
 echo "$psbt"
